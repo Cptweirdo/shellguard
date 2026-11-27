@@ -1,0 +1,27 @@
+{
+  "comment": "Project rules for shellguard. This file can only ADD restrictions. Replace the examples with the commands of this project that reach production, then delete this comment. Try a rule with: shellguard check '<command>'",
+  "rules": [
+    {
+      "comment": "example: a deploy must always be confirmed by a person",
+      "match": ["make", "deploy"],
+      "verdict": "ask",
+      "reason": "deploys to production"
+    },
+    {
+      "comment": "example: never run the data wipe unattended",
+      "match": ["./scripts/reset-db.sh"],
+      "verdict": "deny",
+      "reason": "drops the database; run it yourself"
+    }
+  ],
+  "sql": [
+    {
+      "comment": "example: a project CLI that sends SQL to the production database; only read-only statements pass",
+      "match": ["./bin/mycli", "db", "query"],
+      "flags": ["-e", "--execute"],
+      "dry_run": ["--dry-run"],
+      "label": "production database"
+    }
+  ],
+  "secret_files": []
+}

@@ -1,0 +1,12 @@
+{
+  "name": "shellguard",
+  "version": "0.1.0",
+  "description": "Stops destructive shell commands before Claude runs them: deletions outside the project, writes to non-local databases, destructive cloud CLI calls, secret reads. Plus a quick start for setting up a project safely.",
+  "author": {
+    "name": "Cptweirdo",
+    "url": "https://github.com/Cptweirdo"
+  },
+  "repository": "https://github.com/Cptweirdo/shellguard",
+  "license": "MIT",
+  "keywords": ["safety", "hooks", "auto-mode", "guard"]
+}

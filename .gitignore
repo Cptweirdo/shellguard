@@ -1,0 +1,4 @@
+/shellguard
+/dist/
+*.test
+.DS_Store

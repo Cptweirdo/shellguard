@@ -1,0 +1,53 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(gcloud projects delete *)",
+      "Bash(gcloud secrets versions access *)",
+      "Bash(gcloud * set-iam-policy *)",
+      "Bash(gcloud * delete *)",
+      "Bash(gcloud storage rm *)",
+      "Bash(gsutil rm *)",
+      "Bash(gsutil rb *)",
+      "Bash(bq rm *)",
+      "Bash(aws * delete-* *)",
+      "Bash(aws * terminate-* *)",
+      "Bash(aws s3 rb *)",
+      "Bash(aws secretsmanager get-secret-value *)",
+      "Bash(kubectl delete *)",
+      "Bash(helm uninstall *)",
+      "Bash(terraform destroy*)",
+      "Bash(terraform apply *-auto-approve*)",
+      "Bash(diskutil erase*)",
+      "Bash(tmutil delete*)"
+    ],
+    "ask": [
+      "Bash(gcloud * update *)",
+      "Bash(gcloud * patch *)",
+      "Bash(gcloud * add-iam-policy-binding *)",
+      "Bash(kubectl apply *)",
+      "Bash(kubectl scale *)",
+      "Bash(terraform apply*)",
+      "Bash(git clean *)",
+      "Bash(rsync *--delete*)"
+    ]
+  },
+  "autoMode": {
+    "classifyAllShell": true,
+    "environment": [
+      "$defaults"
+    ],
+    "soft_deny": [
+      "$defaults",
+      "Deleting or overwriting files outside the project directory, its git worktrees and the temp directory, by any tool or language",
+      "Statements other than SELECT, SHOW or EXPLAIN (without ANALYZE) against any database that is not on localhost",
+      "Cloud CLI mutations (create, update, patch, deploy, scale) against a production account or project"
+    ],
+    "hard_deny": [
+      "$defaults",
+      "Never run DROP, TRUNCATE, DELETE, UPDATE, ALTER or GRANT against a production database, by any path",
+      "Never delete or destroy cloud resources, secrets, buckets, datasets, IAM bindings or Kubernetes namespaces and volumes in production",
+      "Never recursively delete anything under the home directory or on another volume outside the project and its worktrees",
+      "Never print, copy or upload the contents of secret files (.env, key files) or secret-manager values"
+    ]
+  }
+}
