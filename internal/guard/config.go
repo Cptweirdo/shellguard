@@ -128,6 +128,15 @@ func ProjectConfigPath(project string) string {
 	return filepath.Join(project, ".claude", "shellguard.json")
 }
 
+// rootPath resolves a root directory completely, the last component too, so
+// that a target reached through a symlinked root still lies below it.
+func rootPath(p string) string {
+	if r, err := filepath.EvalSymlinks(p); err == nil {
+		return r
+	}
+	return realpath(p)
+}
+
 func expandHome(p, home string) string {
 	if p == "~" {
 		return home
@@ -152,10 +161,10 @@ func configFromEnv(cwd string) config {
 		if p = strings.TrimSpace(p); p == "" {
 			return
 		}
-		p = realpath(expandHome(p, home))
+		p = rootPath(expandHome(p, home))
 		// Never accept the filesystem root, the home directory or one of
 		// its ancestors as a place where everything may be deleted.
-		h := realpath(home)
+		h := rootPath(home)
 		if p == "/" || p == h || under(h, p, false) {
 			c.problems = append(c.problems, fmt.Sprintf("root %q is the home directory or above it; ignored", p))
 			return
@@ -183,15 +192,15 @@ func configFromEnv(cwd string) config {
 	}
 	for _, t := range []string{c.tmpdir, "/tmp", "/private/tmp"} {
 		if t != "" {
-			c.roots = append(c.roots, realpath(t))
+			c.roots = append(c.roots, rootPath(t))
 		}
 	}
 
 	// The session's project directory is a root too, unless it is the home
 	// directory, an ancestor of it, or something as shallow as a volume root.
 	if p := os.Getenv("CLAUDE_PROJECT_DIR"); p != "" {
-		p = realpath(p)
-		h := realpath(home)
+		p = rootPath(p)
+		h := rootPath(home)
 		shallow := strings.Count(p, string(filepath.Separator)) < 3
 		if p != h && !under(h, p, false) && !shallow {
 			c.project = p
@@ -239,7 +248,7 @@ func worktrees(project string) []string {
 	}
 	var out []string
 	if main := filepath.Dir(common); main != project {
-		out = append(out, realpath(main))
+		out = append(out, rootPath(main))
 	}
 	entries, err := os.ReadDir(filepath.Join(common, "worktrees"))
 	if err != nil {
@@ -252,7 +261,7 @@ func worktrees(project string) []string {
 		}
 		wt := filepath.Dir(strings.TrimSpace(string(data)))
 		if filepath.IsAbs(wt) && strings.Count(wt, string(filepath.Separator)) >= 3 {
-			out = append(out, realpath(wt))
+			out = append(out, rootPath(wt))
 		}
 	}
 	return out

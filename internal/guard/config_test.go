@@ -39,8 +39,24 @@ func TestProjectConfigIsAdditiveOnly(t *testing.T) {
 	}
 }
 
+// homeOutsideRoots makes a home directory that is not below /tmp or $TMPDIR,
+// both of which are deletion roots.
+func homeOutsideRoots(t *testing.T) string {
+	t.Helper()
+	dir, err := os.MkdirTemp(".", "testhome-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.RemoveAll(dir) })
+	abs, err := filepath.Abs(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return rootPath(abs)
+}
+
 func TestUserConfigRootsAndProblems(t *testing.T) {
-	home := t.TempDir()
+	home := homeOutsideRoots(t)
 	extra := filepath.Join(t.TempDir(), "scratch", "area")
 	cfg := filepath.Join(home, "sg.json")
 	t.Setenv("HOME", home)
@@ -56,7 +72,6 @@ func TestUserConfigRootsAndProblems(t *testing.T) {
 	// The home directory and the filesystem root are refused as roots, and
 	// the refusal escalates every command until the file is fixed.
 	writeJSONFile(t, cfg, `{"roots": ["~", "/"]}`)
-	t.Setenv("TMPDIR", "/nonexistent-tmp") // t.TempDir() lies below the real one
 	if p := Describe(home); len(p.Problems) != 2 {
 		t.Errorf("want 2 problems for ~ and /, got %q", p.Problems)
 	}
@@ -94,7 +109,7 @@ func TestWorktreesAreRoots(t *testing.T) {
 		if proj == wt {
 			other = main
 		}
-		if !got[realpath(other)] {
+		if !got[rootPath(other)] {
 			t.Errorf("from %s: worktree %s missing in %v", proj, other, got)
 		}
 	}

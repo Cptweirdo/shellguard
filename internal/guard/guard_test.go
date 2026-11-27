@@ -7,7 +7,7 @@ func testConfig() config {
 		home:    "/Users/u",
 		cwd:     "/work/src/app",
 		tmpdir:  "/private/tmp/t",
-		roots:   []string{"/work/src", "/private/tmp"},
+		roots:   []string{"/work/src", "/tmp", "/private/tmp"},
 		project: "/work/src/app",
 		rules: []Rule{
 			{Match: []string{"./bin/mycli", "db", "bridge"}, Verdict: "deny", Reason: "copies production certificates to disk"},
