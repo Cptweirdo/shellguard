@@ -6,7 +6,7 @@ Set up the current project for safe work with Claude Code using shellguard. Work
 in order and stop for the user's confirmation where a step says so.
 
 1. **Binary.** Run `shellguard version`. If it is missing, tell the user to install it
-   (`go install github.com/Cptweirdo/shellguard@latest`, or a release binary) and stop.
+   (`go install github.com/Cptweirdo/shellguard@latest`) and stop.
 
 2. **Survey, read-only.** Find what in this project reaches production or real data: deploy
    scripts and CI config, Makefile/justfile/package.json scripts, a project CLI, database

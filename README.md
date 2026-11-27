@@ -28,15 +28,11 @@ database user for the agent, least-privilege cloud credentials, deletion protect
 
 ## Install
 
-Requires Go 1.26+ for now (release binaries will follow).
+Requires Go 1.26+.
 
 ```bash
 go install github.com/Cptweirdo/shellguard@latest
 ```
-
-While the repository is private, `go install` needs your GitHub access: build from a clone
-(`git clone git@github.com:Cptweirdo/shellguard.git && cd shellguard && go install .`), or set
-`GOPRIVATE=github.com/Cptweirdo` with a git credential for github.com.
 
 Then register the hook, either as a plugin:
 
